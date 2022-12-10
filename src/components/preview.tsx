@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import './preview.css'
 
 interface PreviewProps {
   code: string
@@ -38,7 +39,7 @@ const html = `
   </html>
   `
 
-const Preview: React.FC<PreviewProps> = ({code}) => {
+const Preview: React.FC<PreviewProps> = ({ code }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
@@ -48,7 +49,14 @@ const Preview: React.FC<PreviewProps> = ({code}) => {
   }, [code])
 
   return (
-    <iframe title='pview' sandbox="allow-scripts" srcDoc={html} ref={iframe}></iframe>
+    <div className='preview-wrapper'>
+      <iframe title='pview'
+        sandbox="allow-scripts"
+        srcDoc={html}
+        ref={iframe}
+      >
+      </iframe>
+    </div>
   );
 };
 
