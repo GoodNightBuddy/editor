@@ -9,16 +9,7 @@ const html = `
   <!DOCTYPE html>
   <html lang="en">
     <head>
-      <meta charset="utf-8" />
-      <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="theme-color" content="#000000" />
-      <meta
-        name="description"
-        content="Web site created using create-react-app"
-      />
-      <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-      <title>React Opp</title>
+      <style>html {background-color: white;}</style>
     </head>
     <body>
       <div id="root">
@@ -44,8 +35,9 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
 
   useEffect(() => {
     iframe.current.srcdoc = html;
-    iframe.current.contentWindow.postMessage(code, '*')
-
+    setTimeout(() => {
+      iframe.current.contentWindow.postMessage(code, '*')
+    }, 50)
   }, [code])
 
   return (
