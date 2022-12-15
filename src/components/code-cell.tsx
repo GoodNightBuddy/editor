@@ -11,7 +11,7 @@ const CodeCell = () => {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      const output = await bundler(input);
+    const output = await bundler(input);
     setCode(output.code);
     setErr(output.err);
     }, 1000);
