@@ -1,22 +1,33 @@
 import React from 'react';
 import { Cell } from '../state';
+import ActionBar from './action-bar';
 import CodeCell from './code-cell';
 import TextEditor from './text-editor';
+import './cell-list-item.css'
 
 interface CllListItemProps {
   cell: Cell
 }
 
-const CellListItem: React.FC<CllListItemProps> = ({cell}) => {
+const CellListItem: React.FC<CllListItemProps> = ({ cell }) => {
   let child: JSX.Element;
-  if(cell.type === 'code') {
-    child = <CodeCell />;
+  if (cell.type === 'code') {
+    child = <>
+      <div className='action-bar-wrapper'>
+        <ActionBar id={cell.id} />
+      </div>
+      <CodeCell cell={cell} />
+    </>
   } else {
-    child = <TextEditor />;
+    child =
+      <>
+        <TextEditor cell={cell} />
+        <ActionBar id={cell.id} />
+      </>
   }
 
   return (
-    <div>
+    <div className='cell-list-item'>
       {child}
     </div>
   );
