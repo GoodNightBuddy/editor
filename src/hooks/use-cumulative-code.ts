@@ -9,8 +9,8 @@ export const useCumulativeCode = (cellId: string) => {
     const printFunc = `
     var print = value => {
       const root = document.getElementById('root')
-      
-      if(value.$$typeof && value.props) {
+
+      if(value?.$$typeof && value?.props) {
         ReactDOM.render(value, root)
         return
       }
