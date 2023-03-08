@@ -19,7 +19,7 @@ const initialCodeCell: Cell = {
 import ReactDOM from 'react-dom'
 
 const ReactComponent = () => <h1>Hello World!</h1>
-show(<ReactComponent />)   // default render function
+print(<ReactComponent />)   // default print function
 `
 }
 

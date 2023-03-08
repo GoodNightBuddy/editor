@@ -6,6 +6,7 @@ import { Cell } from '../state';
 import { useActions } from '../hooks/use-actions';
 import { useTypedSelector } from '../hooks/use-typed-selector';
 import './code-cell.css'
+import { useCumulativeCode } from '../hooks/use-cumulative-code';
 
 interface CodeCellProps {
   cell: Cell
@@ -15,54 +16,25 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector(state => state.bundles[cell.id])
 
-  const cumulativeCode = useTypedSelector(state => {
-    const {data, order} = state.cells;
-    const orderedCells = order.map(id => data[id]);
-    const cumulativeCode = [
-      `
-      const show = value => {
-        const root = document.getElementById('root')
-        
-        if(value.$$typeof && value.props) {
-          ReactDOM.render(value, root)
-          return
-        }
-        if(typeof(value) === 'object') {
-          value = JSON.stringify(value);
-        }
-        root.innerHTML = value;
-      }
-      `
-    ];
-
-    for (let c of orderedCells) {
-      if(c.type === 'code') {
-        cumulativeCode.push(c.content)
-      }
-      if(c.id === cell.id) {
-        break;
-      }
-    }
-
-    return cumulativeCode;
-  })
+  // Make code from previous cells be able for next cells. But not the contrary. For each cell it's own code compiles with code of previous cells. But not with code of next cells
+  const cumulativeCode = useCumulativeCode(cell.id)
 
   useEffect(() => {
     // For first app load, 2 cells showing by default, but code apllies for it after delay in timer. Hence Preview component firstly loads without code, therefore without inner component with white color, and we see a blink until code is bundling. WE must load this empty component without delay. Hence we disable eslint in dependecies arr 
     if (!bundle) {
-      createBundle(cell.id, cumulativeCode.join('\n'))
+      createBundle(cell.id, cumulativeCode)
       return
     }
 
     const timer = setTimeout(async () => {
-      createBundle(cell.id, cumulativeCode.join('\n'))
+      createBundle(cell.id, cumulativeCode)
     }, 1000);
 
     return () => {
       clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cumulativeCode.join('\n'), cell.id, createBundle])
+  }, [cumulativeCode, cell.id, createBundle])
 
   return (
     <Resizable direction='vertical'>
