@@ -10,13 +10,13 @@ export const store = createStore(
   applyMiddleware(bundlerMiddleware, thunk)
   );
 
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: {
-    id: '',
-    type: 'code'
-  }
-})
+// store.dispatch({
+//   type: ActionType.INSERT_CELL_AFTER,
+//   payload: {
+//     id: '',
+//     type: 'code'
+//   }
+// })
 
 store.dispatch({
   type: ActionType.INSERT_CELL_AFTER,

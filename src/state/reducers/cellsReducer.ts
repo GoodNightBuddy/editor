@@ -12,12 +12,26 @@ interface CellsState {
   }
 }
 
+const initialCodeCell: Cell = {
+  id: 'initialCodeCell',
+  type: 'code',
+  content: `import React from 'react'
+import ReactDOM from 'react-dom'
+
+const ReactComponent = () => <h1>Hello World!</h1>
+show(<ReactComponent />)   // default render function
+`
+}
+
 const initialState: CellsState = {
   loading: false,
   error: null,
-  order: [],
-  data: {}
+  order: ['initialCodeCell'],
+  data: {
+    initialCodeCell
+  }
 };
+
 
 const reducer = produce((state: CellsState = initialState, action: Action) => {
 
