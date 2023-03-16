@@ -12,26 +12,32 @@ interface CellsState {
   }
 }
 
-const initialCodeCell: Cell = {
-  id: 'initialCodeCell',
-  type: 'code',
-  content: `import React from 'react'
-import ReactDOM from 'react-dom'
+// const initialCodeCell: Cell = {
+//   id: 'initialCodeCell',
+//   type: 'code',
+//   content: `import React from 'react'
+// import ReactDOM from 'react-dom'
 
-const ReactComponent = () => <h1>Hello World!</h1>
-print(<ReactComponent />)   // default print function
-`
-}
+// const ReactComponent = () => <h1>Hello World!</h1>
+// print(<ReactComponent />)   // default print function
+// `
+// }
+
+// const initialState: CellsState = {
+//   loading: false,
+//   error: null,
+//   order: ['initialCodeCell'],
+//   data: {
+//     initialCodeCell
+//   }
+// };
 
 const initialState: CellsState = {
   loading: false,
   error: null,
-  order: ['initialCodeCell'],
-  data: {
-    initialCodeCell
-  }
+  order: [],
+  data: {}
 };
-
 
 const reducer = produce((state: CellsState = initialState, action: Action) => {
 
@@ -63,19 +69,44 @@ const reducer = produce((state: CellsState = initialState, action: Action) => {
       const cell: Cell = {
         content: '',
         type: action.payload.type,
-        id: randomId() 
+        id: randomId()
       }
-      
+
       state.data[cell.id] = cell;
 
       const founIndex = state.order.findIndex(id => id === action.payload.id);
 
-      if(founIndex < 0) {
+      if (founIndex < 0) {
         state.order.unshift(cell.id)
       } else {
         state.order.splice(founIndex + 1, 0, cell.id)
       }
       return state;
+
+    case ActionType.FETCH_CELLS:
+      state.loading = true;
+      state.error = null;
+      return state
+
+    case ActionType.FETCH_CELLS_COMPLETE:
+      state.order = action.payload.map(cell => cell.id);
+      state.data = action.payload.reduce((acc, cell) => {
+        acc[cell.id] = cell;
+        return acc;
+      }, {} as CellsState['data'])
+      return state
+
+    case ActionType.FETCH_CELLS_ERROR:
+      state.loading = false;
+      state.error = action.payload;
+      
+      return state
+
+      case ActionType.SAVE_CELLS_ERROR:
+        state.error = action.payload;
+        
+        return state
+  
 
     default:
       return state;

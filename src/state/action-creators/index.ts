@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Dispatch } from "redux";
 import bundler from "../../bundler";
 import { ActionType } from "../action-types";
@@ -9,7 +10,8 @@ import {
   UpdateCellAction,
   Action
 } from "../actions";
-import { CellTypes } from "../cell";
+import { Cell, CellTypes } from "../cell";
+import { RootState } from "../reducers";
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {
@@ -35,7 +37,7 @@ export const moveCell = (id: string, direction: Direction): MoveCellAction => {
       id,
       direction
     }
-  }
+  };
 };
 
 export const insertCellAfter = (id: string, cellType: CellTypes): InsertCellAfterAction => {
@@ -45,7 +47,7 @@ export const insertCellAfter = (id: string, cellType: CellTypes): InsertCellAfte
       id,
       type: cellType
     }
-  }
+  };
 };
 
 export const createBundle = (cellId: string, input: string) => {
@@ -58,7 +60,7 @@ export const createBundle = (cellId: string, input: string) => {
     })
 
     const result = await bundler(input)
-  
+
     dispatch({
       type: ActionType.BUNDLE_COMPLETE,
       payload: {
@@ -66,6 +68,44 @@ export const createBundle = (cellId: string, input: string) => {
         bundle: result
       }
     })
-  
-  }
+
+  };
+};
+
+export const fetchCells = () => {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.FETCH_CELLS
+    })
+
+    try {
+      const {data}: {data: Cell[]} = await axios.get('/cells');
+
+      dispatch({
+        type: ActionType.FETCH_CELLS_COMPLETE,
+        payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: ActionType.FETCH_CELLS_ERROR,
+        payload: error.message
+      }) 
+    }
+  };
+};
+
+export const saveCells = () => {
+  return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const {cells: {data, order}} = getState();
+
+    const cells = order.map(id => data[id]);
+    try {
+    await axios.post('/cells', {cells});
+    } catch (error) {
+      dispatch({
+        type: ActionType.SAVE_CELLS_ERROR,
+        payload: error.message
+      })
+    };;
+  };
 }

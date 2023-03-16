@@ -1,6 +1,6 @@
 import { Middleware } from "./middleware";
 
-let timer: any;
+let timer: NodeJS.Timeout;
 
 export const bundlerMiddleware: Middleware = store => next => action => {
   next(action);
