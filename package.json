@@ -1,8 +1,13 @@
 {
-  "name": "local-client",
+  "name": "@my-custom-cli/local-client",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
+  "files": [
+    "build"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@monaco-editor/react": "3.7.4",
     "@testing-library/jest-dom": "^5.11.8",
@@ -37,6 +42,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
+    "prepublishOnly": "npm run build ",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
